@@ -3,7 +3,7 @@ include 'connectdb.php';
 
 $id = $_GET['id'] ?? null;
 if(!$id){
-    header("Location: activities.php");
+    header("Location: activity.php");
     exit;
 }
 
@@ -15,6 +15,8 @@ if(!$activity){
     header("Location: activity.php");
     exit;
 }
+
+$updated = false;
 
 // Update activity
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
@@ -31,10 +33,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $stmt = $pdo->prepare("UPDATE tbl_activities SET activity_name=?, description=?, activity_image=?, status=? WHERE activity_id=?");
     $stmt->execute([$name, $desc, $img_name, $status, $id]);
 
-    echo "<script>
-        Swal.fire({icon:'success', title:'Activity Updated!', timer:1500, showConfirmButton:false})
-        .then(()=>{window.location.href='activities.php';});
-    </script>";
+    $updated = true; // flag para sa JS
 }
 ?>
 
@@ -75,5 +74,21 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         <a href="activity.php" class="btn btn-secondary">Back</a>
     </form>
 </div>
+
+<?php if($updated): ?>
+<script>
+Swal.fire({
+    icon: 'success',
+    title: 'Updated Successfully!',
+    text: 'The activity details have been updated.',
+    timer: 2000,
+    showConfirmButton: false,
+    timerProgressBar: true
+}).then(() => {
+    window.location.href='activity.php';
+});
+</script>
+<?php endif; ?>
+
 </body>
 </html>

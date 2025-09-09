@@ -1,0 +1,74 @@
+digraph {
+	Guest [label=Guest fillcolor=lightblue shape=box style=filled]
+	GuestID [label="GuestID (PK)" shape=ellipse]
+	Name [label=Name shape=ellipse]
+	Email [label=Email shape=ellipse]
+	Phone [label=Phone shape=ellipse]
+	Address [label=Address shape=ellipse]
+	Username [label=Username shape=ellipse]
+	Password [label=Password shape=ellipse]
+	Status [label=Status shape=ellipse]
+	Guest -> GuestID
+	Guest -> Name
+	Guest -> Email
+	Guest -> Phone
+	Guest -> Address
+	Guest -> Username
+	Guest -> Password
+	Guest -> Status
+	Room [label=Room fillcolor=lightblue shape=box style=filled]
+	RoomID [label="RoomID (PK)" shape=ellipse]
+	RoomNumber [label=RoomNumber shape=ellipse]
+	RoomType [label=RoomType shape=ellipse]
+	MaxPersons [label=MaxPersons shape=ellipse]
+	PricePerNight [label=PricePerNight shape=ellipse]
+	RoomStatus [label=Status shape=ellipse]
+	Room -> RoomID
+	Room -> RoomNumber
+	Room -> RoomType
+	Room -> MaxPersons
+	Room -> PricePerNight
+	Room -> RoomStatus
+	Reservation [label=Reservation fillcolor=lightblue shape=box style=filled]
+	ReservationID [label="ReservationID (PK)" shape=ellipse]
+	CheckInDate [label=CheckInDate shape=ellipse]
+	CheckOutDate [label=CheckOutDate shape=ellipse]
+	PaymentProof [label=PaymentProof shape=ellipse]
+	PaymentMethod [label=PaymentMethod shape=ellipse]
+	AmountPaid [label=AmountPaid shape=ellipse]
+	PaymentStatus [label=PaymentStatus shape=ellipse]
+	ReservationStatus [label=ReservationStatus shape=ellipse]
+	Reservation -> ReservationID
+	Reservation -> CheckInDate
+	Reservation -> CheckOutDate
+	Reservation -> PaymentProof
+	Reservation -> PaymentMethod
+	Reservation -> AmountPaid
+	Reservation -> PaymentStatus
+	Reservation -> ReservationStatus
+	Admin [label=Admin fillcolor=lightblue shape=box style=filled]
+	AdminID [label="AdminID (PK)" shape=ellipse]
+	AdminName [label=Name shape=ellipse]
+	AdminEmail [label=Email shape=ellipse]
+	AdminUsername [label=Username shape=ellipse]
+	AdminPassword [label=Password shape=ellipse]
+	Role [label=Role shape=ellipse]
+	Admin -> AdminID
+	Admin -> AdminName
+	Admin -> AdminEmail
+	Admin -> AdminUsername
+	Admin -> AdminPassword
+	Admin -> Role
+	Makes [label=Makes shape=diamond]
+	Guest -> Makes
+	Makes -> Reservation
+	Reserves [label=Reserves shape=diamond]
+	Reservation -> Reserves
+	Reserves -> Room
+	Approves [label=Approves shape=diamond]
+	Admin -> Approves
+	Approves -> Reservation
+	Manages [label=Manages shape=diamond]
+	Admin -> Manages
+	Manages -> Room
+}

@@ -6,153 +6,120 @@ include_once "header.php";
 if (isset($_GET['pid'])) {
     $pid = $_GET['pid'];
 
-    $select = $pdo->prepare("SELECT * FROM tbl_resroom WHERE pid = :pid");
-    $select->bindParam(':pid', $pid);
-    $select->execute();
-    $row = $select->fetch(PDO::FETCH_OBJ);
+    $stmt = $pdo->prepare("SELECT * FROM tbl_resroom WHERE pid = :pid");
+    $stmt->bindParam(':pid', $pid);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_OBJ);
 
-    // Redirect if no guest is found
     if (!$row) {
         header("Location: reservationlist.php");
         exit();
     }
+}
 ?>
-        <div class="content-wrapper">
-            <div class="content">
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-md-6">
-                            <div class="card shadow-lg">
-                                <div class="card-header bg-primary text-white text-center">
-                                    <h5 class="mb-0">Guest Details</h5>
-                                </div>
-                                <div class="card-body">
-                                    <table class="table table-bordered table-sm">
-                                        <tr>
-                                            <th>Guest Name</th>
-                                            <td><?php echo $row->guestname; ?></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Address</th>
-                                            <td><?php echo $row->address; ?></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Contact No.</th>
-                                            <td><?php echo $row->contnum; ?></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Room Type</th>
-                                            <td><?php echo $row->roomtype; ?></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Room No.</th>
-                                            <td><?php echo $row->roomnum; ?></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Adults</th>
-                                            <td><?php echo $row->adults; ?></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Children</th>
-                                            <td><?php echo $row->children; ?></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Check-In</th>
-                                            <td><?php echo $row->checkin_date; ?></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Check-Out</th>
-                                            <td><?php echo $row->checkout_date; ?></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Special Request</th>
-                                            <td><?php echo $row->special_request; ?></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Payment</th>
-                                            <td><?php echo $row->payment; ?></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Proof of Payment</th>
-                                            <td class="text-center">
-                                                <img src="payments/<?php echo $row->proof_of_payment; ?>" class="img-thumbnail" width="150px">
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <?php if ($row->status != 'Cancelled' && $row->status != 'Confirmed'): ?>
-    <button class="btn btn-success btnConfirm" data-id="<?php echo $row->pid; ?>">
-        <i class="fas fa-check"></i> Confirm
-    </button>
-    <button class="btn btn-danger btnCancel" data-id="<?php echo $row->pid; ?>">
-        <i class="fas fa-times"></i> Cancel
-    </button>
-<?php endif; ?>
 
+<div class="content-wrapper">
+    <div class="content">
+        <div class="container my-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-md-10">
+                    <div class="card shadow-lg border-0 rounded-4">
+                        <div class="card-header bg-gradient-primary text-white text-center py-4 rounded-top">
+                            <h3 class="mb-0 fw-bold">Guest Reservation Details</h3>
+                            <p class="mb-0 small opacity-75">Booking reference #<?php echo $row->pid; ?></p>
+                        </div>
+                        <div class="card-body p-4">
 
-    
-    <a href="reservationlist.php" class="btn btn-secondary">
-        <i class="fas fa-arrow-left"></i> Back
-    </a>
-</div>
+                            <div class="mb-4">
+                                <h5 class="fw-bold text-primary">Guest Information</h5>
+                                <hr>
+                                <p><strong>Guest Name:</strong> <?php echo htmlspecialchars($row->guestname); ?></p>
+                                <p><strong>Contact No.:</strong> <?php echo htmlspecialchars($row->contnum); ?></p>
+                                <p><strong>Address:</strong> <?php echo htmlspecialchars($row->address); ?></p>
+                            </div>
 
+                            <div class="mb-4">
+                                <h5 class="fw-bold text-primary">Room Information</h5>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Room Type:</strong> <?php echo htmlspecialchars($row->roomtype); ?></p>
+                                        <p><strong>Room No.:</strong> <?php echo htmlspecialchars($row->roomnum); ?></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Adults:</strong> <?php echo htmlspecialchars($row->adults); ?></p>
+                                        <p><strong>Children:</strong> <?php echo htmlspecialchars($row->children); ?></p>
                                     </div>
                                 </div>
+                                <p><strong>Status:</strong> 
+                                    <span class="badge 
+                                        <?php echo $row->status == 'Confirmed' ? 'bg-success' : 
+                                                   ($row->status == 'Pending' ? 'bg-warning text-dark' : 
+                                                   ($row->status == 'Cancelled' ? 'bg-danger' : 'bg-secondary')); ?>">
+                                        <?php echo htmlspecialchars($row->status); ?>
+                                    </span>
+                                </p>
                             </div>
+
+                            <div class="mb-4">
+                                <h5 class="fw-bold text-primary">Stay Details</h5>
+                                <hr>
+                                <p><strong>Check-In:</strong> <?php echo htmlspecialchars($row->checkin_date); ?></p>
+                                <p><strong>Check-Out:</strong> <?php echo htmlspecialchars($row->checkout_date); ?></p>
+                                <p><strong>Special Request:</strong> 
+                                    <?php echo !empty($row->special_request) ? htmlspecialchars($row->special_request) : '<span class="text-muted">None</span>'; ?>
+                                </p>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5 class="fw-bold text-primary">Payment Information</h5>
+                                <hr>
+                                <p><strong>Payment Method:</strong> <?php echo htmlspecialchars($row->payment); ?></p>
+                                <div class="text-center">
+                                    <?php 
+                                    if (!empty($row->proof_of_payment)) { 
+                                        $proofPath = "payment_proofs/" . htmlspecialchars($row->proof_of_payment);
+                                        if (file_exists($proofPath)) {
+                                    ?>
+                                        <img src="<?php echo $proofPath; ?>" 
+                                             class="img-fluid rounded shadow-sm" style="max-width:200px; cursor:pointer"
+                                             onclick="showProof('<?php echo htmlspecialchars($row->proof_of_payment); ?>')">
+                                        <p class="mt-2 text-muted small">Click image to enlarge</p>
+                                    <?php } else { ?>
+                                        <span class="text-danger">File not found in folder</span>
+                                    <?php } 
+                                    } else { ?>
+                                        <span class="text-muted">No proof of payment uploaded</span>
+                                    <?php } ?>
+                                </div>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <a href="reservationlist.php" class="btn btn-outline-primary px-4">
+                                    <i class="fas fa-arrow-left"></i> Back to List
+                                </a>
+                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-<?php
-}
-include_once "footer.php";
-?>
+    </div>
+</div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- SweetAlert2 Script -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
-    $(document).ready(function () {
-        $(".btnConfirm").click(function () {
-            var pid = $(this).data("id");
-
-            Swal.fire({
-                title: "Confirm Reservation?",
-                text: "Are you sure?",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonColor: "#28a745",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, Confirm"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.post("update_status.php", { pid: pid, status: "Confirmed" }, function () {
-                        Swal.fire("Confirmed!", "Reservation updated.", "success")
-                            .then(() => window.location.reload());
-                    });
-                }
-            });
-        });
-
-        $(".btnCancel").click(function () {
-            var pid = $(this).data("id");
-
-            Swal.fire({
-                title: "Cancel Reservation?",
-                text: "Are you sure?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "Yes, Cancel"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.post("update_status.php", { pid: pid, status: "Cancelled" }, function () {
-                        Swal.fire("Cancelled!", "Reservation updated.", "success")
-                            .then(() => window.location.reload());
-                    });
-                }
-            });
-        });
+function showProof(filename) {
+    Swal.fire({
+        title: 'Proof of Payment',
+        html: `<img src="payment_proofs/${filename}" style="max-width:100%; border-radius:10px;">`,
+        showCloseButton: true,
+        showConfirmButton: false,
+        width: 600
     });
+}
 </script>
+
+<?php include_once "footer.php"; ?>
